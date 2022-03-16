@@ -3,7 +3,7 @@ import pygame
 import time
 import random
 import math
-from entities import Player, Enemy, Cloud
+from entities import Player, Enemy, RoadMarker
 # import numpy as np
 
 # Import pygame.locals for easier access to key coordinates
@@ -33,7 +33,7 @@ pygame.display.set_caption("Formula V")
 FPS = 60
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 800
-WINDOW_WIDTH = 600
+WINDOW_WIDTH = 400
 WINDOW_HEIGHT = 800
 
 
@@ -55,11 +55,10 @@ window = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT))
 
 # Create custom events for adding a new enemy and cloud
 ADDENEMY = pygame.USEREVENT + 1
-# pygame.time.set_timer(ADDENEMY, 250)
+pygame.time.set_timer(ADDENEMY, 200)
 ADDCLOUD = pygame.USEREVENT + 2
 # pygame.time.set_timer(ADDCLOUD, 1000)
 pygame.event.set_blocked ( pygame.MOUSEMOTION )
-
 
 # Create our 'player'
 player = Player(window)
@@ -89,7 +88,6 @@ all_sprites.add(player)
 # move_up_sound.set_volume(0.5)
 # move_down_sound.set_volume(0.5)
 # collision_sound.set_volume(0.5)
-window.get_rect()
 # Variable to keep our main loop running
 running = True
 tick = 0
@@ -114,16 +112,16 @@ while running:
         # Should we add a new enemy?
         elif event.type == ADDENEMY:
             # Create the new enemy, and add it to our sprite groups
-            new_enemy = Enemy()
+            new_enemy = Enemy(window)
             enemies.add(new_enemy)
             all_sprites.add(new_enemy)
 
         # Should we add a new cloud?
-        elif event.type == ADDCLOUD:
-            # Create the new cloud, and add it to our sprite groups
-            new_cloud = Cloud()
-            clouds.add(new_cloud)
-            all_sprites.add(new_cloud)
+        # elif event.type == ADDCLOUD:
+        #     # Create the new cloud, and add it to our sprite groups
+        #     new_cloud = Cloud()
+        #     clouds.add(new_cloud)
+        #     all_sprites.add(new_cloud)
 
     # Get the set of keys pressed and check for user input
 
@@ -133,29 +131,29 @@ while running:
     pressed_keys = pygame.key.get_pressed()
     if pressed_keys:
         if pressed_keys[K_UP]:
-            u_y = -1
+            u_y = 1
             # move_up_sound.play()
         if pressed_keys[K_DOWN]:
-            u_y = 1
+            u_y = -1
             # move_down_sound.play()
         if pressed_keys[K_LEFT]:
             u_x = -1
         if pressed_keys[K_RIGHT]:
             u_x = 1
     
+    # u_x, u_y = controller(gy)
     
     player.update(u_x, u_y)
     
     # Update the position of our enemies and clouds
-    enemies.update()
-    clouds.update()
+    enemies.update(player.v_y)
+    # clouds.update(player.v_y)
 
 #RENDERING ############################################################
     # Fill the screen with sky blue
+    red = max(0,min(255,player.v_y*5))
+    window.fill((red, 250, 255-red))
     
-    window.fill((135, 250, 200))
-    
-    pygame.draw.rect(screen, RED, (50, 20, 120, 100))
 
     # Draw all our sprites
     for entity in all_sprites:
@@ -175,10 +173,13 @@ while running:
         # collision_sound.play()
 
         # Stop the loop
-        running = False
+        # running = False
 
     screen.fill((0, 0, 0))
     screen.blit(window, ((SCREEN_WIDTH-WINDOW_WIDTH)/2, (SCREEN_HEIGHT-WINDOW_HEIGHT)/2))
+    
+    
+    # pygame.draw.rect(window, RED, (0, 800, 0, 100))
     # Flip everything to the display
     pygame.display.update()
 
@@ -188,8 +189,6 @@ while running:
     clock.tick(FPS)
 ############################################################
     
-
-
 
 print(f"reached the finish in {tick} ticks!")
 # At this point, we're done, so we can stop and quit the mixer
