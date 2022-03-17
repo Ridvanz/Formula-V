@@ -23,8 +23,8 @@ pygame.display.set_caption("Formula V")
 # Load and play our background music
 # Sound source: http://ccmixter.org/files/Apoxode/59262
 # License: https://creativecommons.org/licenses/by/3.0/
-# pygame.mixer.music.load("Apoxode_-_Electric_1.mp3")
-# pygame.mixer.music.play(loops=-1)
+pygame.mixer.music.load("assets/music/game.mp3")
+pygame.mixer.music.play(loops=-1)
 
 # Load all our sound files
 # Sound sources: Jon Fincher

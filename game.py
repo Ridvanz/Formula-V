@@ -77,15 +77,17 @@ class Game:
             self.window.blit(entity.surf, entity.rect)
 
         font = pygame.font.SysFont('Arial', 12)
-        fps = font.render(f"FPS: {round(self.clock.get_fps(),2)}", True, (0,0,0))
-        speed = font.render(f"Speed: {round(self.player.v_y,1)}",True,(0,0,0))
-        ticks = font.render(f"Ticks: {self.ticks}",True,(0,0,0))
-        self.window.blit(fps,(s.WINDOW_WIDTH-80,20))
-        self.window.blit(speed, (s.WINDOW_WIDTH - 80, 40))
-        self.window.blit(ticks, (s.WINDOW_WIDTH - 80, 60))
+        fps = font.render(f"FPS: {round(self.clock.get_fps(),2)}", True, (255,255,255))
+        speed = font.render(f"Speed: {round(self.player.v_y,1)}",True,(255,255,255))
+        ticks = font.render(f"Ticks: {self.ticks}",True,(255,255,255))
+        distance_left = font.render(f"Distance left: {int(s.TRACK_LENGTH-self.player.s_y)}",True,(255,255,255))
 
         self.screen.fill(s.BLACK)
         self.screen.blit(self.window, ((s.SCREEN_WIDTH-s.WINDOW_WIDTH)/2, (s.SCREEN_HEIGHT-s.WINDOW_HEIGHT)/2))
+        self.screen.blit(fps,(820,20))
+        self.screen.blit(speed, (820, 40))
+        self.screen.blit(ticks, (820, 60))
+        self.screen.blit(distance_left,(820,80))
         
         # pygame.draw.rect(window, RED, (0, 800, 0, 100))
         # Flip everything to the display
