@@ -1,7 +1,6 @@
 import pygame
 from entities import Player, Enemy, RoadMarker
 import settings as s
-import agent as a
 import random
 from pygame.locals import (
     RLEACCEL,
@@ -26,7 +25,6 @@ class Game:
         self.window          = pygame.Surface((s.WINDOW_WIDTH, s.WINDOW_HEIGHT))
 
         self.player          = Player()
-        self.agent           = a.Agent()
 
         self.enemies         = pygame.sprite.Group()
         self.all_sprites     = pygame.sprite.Group()
@@ -41,12 +39,11 @@ class Game:
         self.obstacles_x, self.obstacles_y = self._generate_obstacle_coords(self.seed)
 
 
-    def update(self):
+    def update(self, action):
         
         self._add_enemies()
-        
-        states = self._get_states()
-        u_x, u_y = self._get_actions(states)
+    
+        u_x, u_y = self._get_control_input(action)
         
         self.player.update(u_x, u_y)
         self.enemies.update(self.player.s_y)
@@ -62,31 +59,30 @@ class Game:
     
     
     def render(self):
-        # Fill the screen with sky blue
+
         red = max(0,min(255, self.player.v_y*5))
         self.window.fill((red, 255, 255-red))
-        
-        # Draw all our sprites
+    
         for entity in self.all_sprites:
             self.window.blit(entity.surf, entity.rect)
         
         self.screen.fill(s.BLACK)
         self.screen.blit(self.window, ((s.SCREEN_WIDTH-s.WINDOW_WIDTH)/2, (s.SCREEN_HEIGHT-s.WINDOW_HEIGHT)/2))
         
-        # pygame.draw.rect(window, RED, (0, 800, 0, 100))
-        # Flip everything to the display
         pygame.display.update()
         
-    
-    def _get_states(self):
+    def observe(self):
         
-        return self.enemies.sprites()
+        print([enemy.rect for enemy in self.enemies.sprites()])
+        print(self.player.s_x, self.player.s_y, self.player.v_x, self.player.v_y )
+        
+        return 
     
     
     def _add_enemies(self):
         
         while (self.obs_index < s.NUM_OBSTACLES) and (self.player.s_y + s.HORIZON > self.obstacles_y[self.obs_index]):
-            # Create the new enemy, and add it to our sprite groups
+
             new_enemy = Enemy(s_x = self.obstacles_x[self.obs_index], s_y = self.obstacles_y[self.obs_index])
             self.enemies.add(new_enemy)
             self.all_sprites.add(new_enemy)
@@ -94,12 +90,15 @@ class Game:
             self.obs_index += 1
             
             
-    def _get_actions(self, states):
+    def _get_control_input(self, action):
         
-        u_x = u_y = 0
+        (u_x, u_y) = action
         
         pressed_keys = pygame.key.get_pressed()
         if s.RENDER and any(pressed_keys):
+            
+            u_x = u_y = 0
+            
             if pressed_keys[K_UP]:
                 u_y = 1
                 # move_up_sound.play()
@@ -110,9 +109,6 @@ class Game:
                 u_x = -1
             if pressed_keys[K_RIGHT]:
                 u_x = 1
-
-        else:
-            u_x, u_y = self.agent.act(states)
 
         return u_x, u_y
     

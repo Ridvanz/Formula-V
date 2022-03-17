@@ -7,20 +7,20 @@ from entities import Player, Enemy, RoadMarker
 import settings as s
 from utils import try_quit, generate_obstacle_coords
 import game as g
-
-
-# import numpy as np
-
-# Import pygame.locals for easier access to key coordinates
-# Updated to conform to flake8 and black standards
-# from pygame.locals import *
-
+import agent as a
 
 # Initialize pygame
-pygame.mixer.init()
+
 pygame.init()
-pygame.event.set_blocked ( pygame.MOUSEMOTION )
-pygame.display.set_caption("Formula V")
+pygame.event.set_blocked (pygame.MOUSEMOTION )
+if s.SOUND:
+    pygame.mixer.init()
+if s.RENDER:
+    screen = pygame.display.set_mode((s.SCREEN_WIDTH, s.SCREEN_HEIGHT))
+    pygame.display.set_caption("Formula V")
+
+# Setup the clock for a decent framerate
+clock = pygame.time.Clock()
 
 # Load and play our background music
 # Sound source: http://ccmixter.org/files/Apoxode/59262
@@ -40,11 +40,9 @@ pygame.display.set_caption("Formula V")
 # collision_sound.set_volume(0.5)
 # Variable to keep our main loop running
 
-# Setup the clock for a decent framerate
-clock = pygame.time.Clock()
-screen = pygame.display.set_mode((s.SCREEN_WIDTH, s.SCREEN_HEIGHT))
 
 game = g.Game(screen, clock)
+agent = a.Agent()
 
 # Our main loop
 while game.running:
@@ -52,7 +50,9 @@ while game.running:
     for event in pygame.event.get():
         try_quit(event)
 
-    game.update()
+    observation = game.observe()
+    action = agent.act(observation)
+    game.update(action)
     
     if s.RENDER:
         game.render()
@@ -63,8 +63,10 @@ while game.running:
 print(f"reached the finish in {game.ticks} ticks!")
 print(f"Number of crashes: {game.crashes}")
 print(f"Max speed reached: {game.player.max_speed} pixels per second!")
-# At this point, we're done, so we can stop and quit the mixer
+
+
 pygame.mixer.music.stop()
 pygame.mixer.quit()
+pygame.display.quit()
 pygame.quit()
 

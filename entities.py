@@ -31,11 +31,11 @@ class Player(pygame.sprite.Sprite):
         self.C_y = 0.999
         self.C_f = 0.9
         self.C_r = 0.2
-        self.crash = 0.5
+        self.crash = 0.25
         self.left_border = 0
         self.right_border = s.WINDOW_WIDTH
         # self.rect.center = window.get_rect().center
-        self.rect.bottom = s.WINDOW_HEIGHT-50
+        self.rect.bottom = s.WINDOW_HEIGHT-s.PLAYER_HEIGHT
         
         self.max_speed = 0.0
 
@@ -101,11 +101,10 @@ class Enemy(pygame.sprite.Sprite):
 
     def update(self, s_y):
         
-        self.rect.bottom = self.bottom_border - 50 - (self.s_y - s_y)
+        self.rect.bottom = self.bottom_border - s.PLAYER_HEIGHT - (self.s_y - s_y)
 
-        if self.rect.bottom > self.bottom_border + 1000:
+        if self.rect.bottom > self.bottom_border + s.ENEMY_SIZE[1]:
             self.kill()
-
 
 # Define the cloud object extending pygame.sprite.Sprite
 # Use an image for a better looking sprite
