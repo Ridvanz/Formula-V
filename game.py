@@ -56,7 +56,9 @@ class Game:
         self.ticks += 1
         # Ensure we maintain a 30 frames per second rate
         self.clock.tick(s.FPS)
-        print(f"fps: {self.clock.get_fps()}")
+        
+        if s.DEBUG:
+            print(f"fps: {self.clock.get_fps()}")
     
     
     def render(self):

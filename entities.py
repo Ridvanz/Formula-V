@@ -74,8 +74,10 @@ class Player(pygame.sprite.Sprite):
         if self.v_y > self.max_speed:
             self.max_speed = self.v_y
         
-        print((self.v_x, self.v_y))
-        print((self.s_y))
+        if s.DEBUG:
+            print(f"player velocity: {(self.v_x, self.v_y)}")
+            print(f"player distance: {self.s_y}")
+
     
     def penalize(self):
         self.v_y = self.v_y * self.crash

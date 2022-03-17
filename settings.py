@@ -11,6 +11,7 @@ RENDER                = True
 SOUND                 = True
 VOLUME                = 0.7
 SEED                  = 0
+DEBUG                 = True
 
 TRACK_LENGTH          = 5e4
 SPAWN_AREA            = 1000

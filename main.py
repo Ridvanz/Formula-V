@@ -60,12 +60,11 @@ while game.running:
 
 ############################################################
     
-print(f"reached the finish in {game.tick} ticks!")
+print(f"reached the finish in {game.ticks} ticks!")
 print(f"Number of crashes: {game.crashes}")
 print(f"Max speed reached: {game.player.max_speed} pixels per second!")
 # At this point, we're done, so we can stop and quit the mixer
 pygame.mixer.music.stop()
 pygame.mixer.quit()
 pygame.quit()
-sys.exit()
 
