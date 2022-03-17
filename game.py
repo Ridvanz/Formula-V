@@ -33,7 +33,7 @@ class Game:
         
         self.running         = True
         self.paused          = False
-        self.ticks            = 0
+        self.ticks           = 0
         self.crashes         = 0
         self.obs_index       = 0
         
@@ -44,7 +44,6 @@ class Game:
     def update(self):
         
         self._add_enemies()
-        
         states = self._get_states()
         u_x, u_y = self._get_actions(states)
         
@@ -80,7 +79,7 @@ class Game:
     
     def _get_states(self):
         
-        return self.enemies.sprites()
+        return  self.enemies.sprites()
     
     
     def _add_enemies(self):

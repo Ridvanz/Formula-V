@@ -8,13 +8,11 @@ import settings as s
 from utils import try_quit, generate_obstacle_coords
 import game as g
 
-
 # import numpy as np
 
 # Import pygame.locals for easier access to key coordinates
 # Updated to conform to flake8 and black standards
 # from pygame.locals import *
-
 
 # Initialize pygame
 pygame.mixer.init()
