@@ -75,7 +75,15 @@ class Game:
         # Draw all our sprites
         for entity in self.all_sprites:
             self.window.blit(entity.surf, entity.rect)
-        
+
+        font = pygame.font.SysFont('Arial', 12)
+        fps = font.render(f"FPS: {round(self.clock.get_fps(),2)}", True, (0,0,0))
+        speed = font.render(f"Speed: {round(self.player.v_y,1)}",True,(0,0,0))
+        ticks = font.render(f"Ticks: {self.ticks}",True,(0,0,0))
+        self.window.blit(fps,(s.WINDOW_WIDTH-80,20))
+        self.window.blit(speed, (s.WINDOW_WIDTH - 80, 40))
+        self.window.blit(ticks, (s.WINDOW_WIDTH - 80, 60))
+
         self.screen.fill(s.BLACK)
         self.screen.blit(self.window, ((s.SCREEN_WIDTH-s.WINDOW_WIDTH)/2, (s.SCREEN_HEIGHT-s.WINDOW_HEIGHT)/2))
         
