@@ -16,7 +16,7 @@ from pygame.locals import (
 # Define the Player object extending pygame.sprite.Sprite
 # Instead of a surface, we use an image for a better looking sprite
 class Player(pygame.sprite.Sprite):
-    def __init__(self, size=s.PLAYER_SIZE, color=(255,255,255)):
+    def __init__(self, size=s.PLAYER_SIZE, color=s.ORANGE):
         super(Player, self).__init__()
         self.surf = pygame.Surface(size)
         self.surf.fill(color)
@@ -28,7 +28,7 @@ class Player(pygame.sprite.Sprite):
         self.v_x = 0.0
         self.v_y = 0.0
         self.C_x = 0.99
-        self.C_y = 0.995
+        self.C_y = 0.999
         self.C_f = 0.9
         self.C_r = 0.2
         self.crash = 0.5
@@ -96,8 +96,7 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.left = s_x
         self.s_y = s_y
         
-    # Move the enemy based on speed
-    # Remove it when it passes the left edge of the screen
+
     def update(self, s_y):
         
         self.rect.bottom = self.bottom_border - 50 - (self.s_y - s_y)

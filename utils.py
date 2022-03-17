@@ -1,13 +1,22 @@
-
 import pygame, sys
 from pygame.locals import *
 from pygame.font import Font
 import settings as s
+import random
 
 
-def generate_obstacle_locs(seed=0):
+def generate_obstacle_coords(seed=0):
     
     random.seed(seed)
+    obstacles_y = [0]
+    for i in range(s.NUM_OBSTACLES):
+        randint = random.randint(100,200)
+        obstacles_y.append(obstacles_y[i] + randint)
+
+    obstacles_y = [x/obstacles_y[-1]*(s.TRACK_LENGTH-s.SPAWN_AREA)+s.SPAWN_AREA for x in obstacles_y][:-1]
+    obstacles_x = [random.randint(0.5*s.ENEMY_SIZE[0], s.WINDOW_WIDTH - 1.5*s.ENEMY_SIZE[0]) for x in range(len(obstacles_y))]
+
+    return obstacles_x, obstacles_y
 
 
 def try_quit(e):
