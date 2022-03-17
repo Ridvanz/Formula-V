@@ -11,6 +11,7 @@ from pygame.locals import (
     KEYDOWN,
     QUIT,
 )
+import glob
 
 
 # Define the Player object extending pygame.sprite.Sprite
@@ -18,8 +19,8 @@ from pygame.locals import (
 class Player(pygame.sprite.Sprite):
     def __init__(self, size=s.PLAYER_SIZE, color=s.ORANGE):
         super(Player, self).__init__()
-        self.surf = pygame.Surface(size)
-        self.surf.fill(color)
+        self.surf = pygame.image.load("assets/images/car.png")
+        self.surf = pygame.transform.scale(self.surf, size)
         # self.surf.set_colorkey((255, 255, 255), RLEACCEL)
         self.rect = self.surf.get_rect()
         self.size = size
@@ -88,8 +89,10 @@ class Player(pygame.sprite.Sprite):
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, s_x, s_y, size=s.ENEMY_SIZE, color=(0,0,0)):
         super(Enemy, self).__init__()
-        self.surf = pygame.Surface(size)
-        self.surf.fill(color)
+        images = glob.glob("assets/images/enemies/*")
+        self.random_image = random.choice(images)
+        self.surf = pygame.image.load(self.random_image)
+        self.surf = pygame.transform.scale(self.surf, size)
         self.rect = self.surf.get_rect()
         self.bottom_border = s.WINDOW_HEIGHT
         # self.surf.set_colorkey((255, 0, 255), RLEACCEL)
@@ -110,21 +113,40 @@ class Enemy(pygame.sprite.Sprite):
 # Define the cloud object extending pygame.sprite.Sprite
 # Use an image for a better looking sprite
 class RoadMarker(pygame.sprite.Sprite):
-    def __init__(self, window):
+    def __init__(self, s_x, s_y, size=(10,70), color=(0, 0, 0)):
         super(RoadMarker, self).__init__()
-        self.surf = pygame.Surface((20, 10))
-        # self.surf.set_colorkey((0, 0, 0), RLEACCEL)
-        # The starting position is randomly generated
-        self.rect = self.surf.get_rect(
-            center=(
-                400,
-                0
-            )
-        )
-        
-    # Move the cloud based on a constant speed
-    # Remove it when it passes the left edge of the screen
-    def update(self):
-        self.rect.move_ip(-5, 0)
-        if self.rect.right < 0:
+        self.surf = pygame.Surface(size)
+        self.surf.fill(color)
+        self.surf.set_alpha(50)
+        self.rect = self.surf.get_rect()
+        self.bottom_border = s.WINDOW_HEIGHT
+        # self.surf.set_colorkey((255, 0, 255), RLEACCEL)
+        # The starting position is randomly generated, as is the speed
+
+        self.rect.left = s_x
+        self.s_y = s_y
+
+    def update(self, s_y):
+        self.rect.bottom = self.bottom_border - 50 - (self.s_y - s_y)
+
+        if self.rect.bottom > self.bottom_border + 1000:
             self.kill()
+
+
+class Finish(pygame.sprite.Sprite):
+    def __init__(self, s_x=0, s_y=s.TRACK_LENGTH, size=(s.WINDOW_WIDTH,50), color=(0, 0, 0)):
+        super(Finish, self).__init__()
+        self.surf = pygame.image.load("assets/images/finish.jpeg")
+        #self.surf.fill(color)
+        self.rect = self.surf.get_rect()
+        self.bottom_border = s.WINDOW_HEIGHT
+        # self.surf.set_colorkey((255, 0, 255), RLEACCEL)
+        # The starting position is randomly generated, as is the speed
+
+        self.rect.left = s_x
+        self.s_y = s_y
+
+    # Move the enemy based on speed
+    # Remove it when it passes the left edge of the screen
+    def update(self, s_y):
+        self.rect.bottom = self.bottom_border - 50 - (self.s_y - s_y)

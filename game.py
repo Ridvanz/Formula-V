@@ -1,5 +1,5 @@
 import pygame
-from entities import Player, Enemy, RoadMarker
+from entities import Player, Enemy, RoadMarker,Finish
 import settings as s
 import agent as a
 import random
@@ -27,28 +27,35 @@ class Game:
 
         self.player          = Player()
         self.agent           = a.Agent()
+        self.finish_line     = Finish()
 
         self.enemies         = pygame.sprite.Group()
         self.all_sprites     = pygame.sprite.Group()
+        self.roadmarkers     = pygame.sprite.Group()
         
         self.running         = True
         self.paused          = False
         self.ticks           = 0
         self.crashes         = 0
         self.obs_index       = 0
-        
+        self.marker_index = 0
+
+        self.all_sprites.add(self.finish_line)
         self.all_sprites.add(self.player)
         self.obstacles_x, self.obstacles_y = self._generate_obstacle_coords(self.seed)
-
+        self.road_marker_x, self.road_marker_y = self._generate_roadmarker_coords()
 
     def update(self):
-        
+
+        self._add_road_markers()
         self._add_enemies()
         states = self._get_states()
         u_x, u_y = self._get_actions(states)
-        
+
         self.player.update(u_x, u_y)
         self.enemies.update(self.player.s_y)
+        self.finish_line.update(self.player.s_y)
+        self.roadmarkers.update(self.player.s_y)
         self._handle_collisions()
         self._check_finished()
         
@@ -91,6 +98,21 @@ class Game:
             self.all_sprites.add(new_enemy)
             
             self.obs_index += 1
+
+    def _add_road_markers(self):
+
+        while (self.marker_index < s.TRACK_LENGTH) and (self.player.s_y + s.HORIZON > self.road_marker_y[self.marker_index]):
+            # Create the new enemy, and add it to our sprite groups
+            new_marker_left = RoadMarker(s_x=self.road_marker_x[self.marker_index], s_y=self.road_marker_y[self.marker_index])
+            new_marker_right = RoadMarker(s_x=self.road_marker_x[self.marker_index+1],
+                                         s_y=self.road_marker_y[self.marker_index+1])
+
+            self.roadmarkers.add(new_marker_left)
+            self.roadmarkers.add(new_marker_right)
+            self.all_sprites.add(new_marker_left)
+            self.all_sprites.add(new_marker_right)
+
+            self.marker_index += 2
             
             
     def _get_actions(self, states):
@@ -152,4 +174,15 @@ class Game:
         obstacles_x = [random.randint(0.5*s.ENEMY_SIZE[0], s.WINDOW_WIDTH - 1.5*s.ENEMY_SIZE[0]) for x in range(len(obstacles_y))]
 
         return obstacles_x, obstacles_y
-    
+
+    def _generate_roadmarker_coords(self):
+
+        marker_y = []
+        marker_x = []
+        for i in range(int(s.TRACK_LENGTH)):
+            marker_y.append(i*125)
+            marker_x.append(s.WINDOW_WIDTH*0.25)
+
+            marker_y.append(i*125)
+            marker_x.append(s.WINDOW_WIDTH*0.75)
+        return marker_x, marker_y
