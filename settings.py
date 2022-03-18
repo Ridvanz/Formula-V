@@ -8,17 +8,19 @@ WINDOW_WIDTH          = 400
 WINDOW_HEIGHT         = 800
 TITLE_SCREEN          = True
 RENDER                = True
+SPRITES               = True
 SOUND                 = True
-VOLUME                = 0.7
+VOLUME                = 0.5
 SEED                  = 0
-DEBUG                 = True
+DEBUG                 = False
 
 TRACK_LENGTH          = 5e4
 SPAWN_AREA            = 1000
 NUM_OBSTACLES         = 250
 HORIZON               = 1000
 ENEMY_SIZE            = (40, 40)
-PLAYER_SIZE           = (40, 60)
+PLAYER_SIZE           = (40, 80)
+PLAYER_HEIGHT         = 50
 
 WHITE                 = (255, 255, 255)
 BLACK                 = (0, 0, 0)

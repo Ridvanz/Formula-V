@@ -1,19 +1,11 @@
 import pygame
-from entities import Player, Enemy, RoadMarker
+from entities import Player, Enemy, RoadMarker, Finish
 import settings as s
-import agent as a
 import random
-from pygame.locals import (
-    RLEACCEL,
-    K_UP,
-    K_DOWN, 
-    K_LEFT,
-    K_RIGHT,
-    K_ESCAPE,
-    KEYDOWN,
-    QUIT,
-)
-
+from pygame.locals import ( K_UP,
+                            K_DOWN, 
+                            K_LEFT,
+                            K_RIGHT)
 
 class Game:
     """Provides game flow."""
@@ -26,30 +18,38 @@ class Game:
         self.window          = pygame.Surface((s.WINDOW_WIDTH, s.WINDOW_HEIGHT))
 
         self.player          = Player()
-        self.agent           = a.Agent()
-
+        self.finish_line     = Finish()
+        
         self.enemies         = pygame.sprite.Group()
         self.all_sprites     = pygame.sprite.Group()
+        self.roadmarkers     = pygame.sprite.Group()
         
         self.running         = True
         self.paused          = False
-        self.ticks            = 0
+        self.ticks           = 0
         self.crashes         = 0
         self.obs_index       = 0
+        self.marker_index    = 0
         
+        self.all_sprites.add(self.finish_line)
         self.all_sprites.add(self.player)
         self.obstacles_x, self.obstacles_y = self._generate_obstacle_coords(self.seed)
+        self.road_marker_x, self.road_marker_y = self._generate_roadmarker_coords()
 
-
-    def update(self):
+    def update(self, action):
+                
+        self._add_road_markers()
+        self.roadmarkers.update(self.player.s_y)
         
         self._add_enemies()
         
-        states = self._get_states()
-        u_x, u_y = self._get_actions(states)
+        u_x, u_y = self._get_control_input(action)
         
         self.player.update(u_x, u_y)
         self.enemies.update(self.player.s_y)
+                
+        self.finish_line.update(self.player.s_y)
+
         self._handle_collisions()
         self._check_finished()
         
@@ -62,44 +62,91 @@ class Game:
     
     
     def render(self):
-        # Fill the screen with sky blue
+
         red = max(0,min(255, self.player.v_y*5))
         self.window.fill((red, 255, 255-red))
-        
-        # Draw all our sprites
+    
         for entity in self.all_sprites:
             self.window.blit(entity.surf, entity.rect)
+            
+        self.window.blit(self.player.surf, self.player.rect)
         
         self.screen.fill(s.BLACK)
         self.screen.blit(self.window, ((s.SCREEN_WIDTH-s.WINDOW_WIDTH)/2, (s.SCREEN_HEIGHT-s.WINDOW_HEIGHT)/2))
         
-        # pygame.draw.rect(window, RED, (0, 800, 0, 100))
-        # Flip everything to the display
+        font = pygame.font.SysFont('Arial', 16)
+        fps = font.render(f"FPS: {round(self.clock.get_fps(),2)}", True, (255,255,255))
+        speed = font.render(f"Speed: {round(self.player.v_y,1)}",True,(255,255,255))
+        ticks = font.render(f"Ticks: {self.ticks}",True,(255,255,255))
+        distance_left = font.render(f"Distance left: {int(s.TRACK_LENGTH-self.player.s_y)}",True,(255,255,255))
+        
+        self.screen.blit(fps,(820,20))
+        self.screen.blit(speed, (820, 60))
+        self.screen.blit(ticks, (820, 100))
+        self.screen.blit(distance_left,(820,140))
+        
         pygame.display.update()
         
-    
-    def _get_states(self):
+    def observe(self):
         
-        return self.enemies.sprites()
+        # print([(enemy.s_x, enemy.s_y - self.player.s_y) for enemy in self.enemies.sprites()])
+        print(self.player.s_x+s.PLAYER_SIZE[0]/2, self.player.s_y, self.player.v_x, self.player.v_y )
+        player = {}
+        player["left_wall"] = self.player.s_x+s.PLAYER_SIZE[0]/2
+        player["right_wall"] = s.WINDOW_WIDTH - self.player.s_x - s.PLAYER_SIZE[0]/2
+        player["distance_traveled"] = self.player.s_y
+        player["velocity_x"] = self.player.v_x
+        player["velocity_y"] = self.player.v_y
+        
+        obstacles = []
+        for enemy in self.enemies.sprites():
+            obstacle = {}
+            obstacle["relative_x"] = enemy.s_x -  self.player.s_x
+            obstacle["relative_y"] = enemy.s_y -  self.player.s_y
+            obstacles.append(obstacle)
+        
+        states = {"player": player, "obstacles": obstacles}
+        
+        print(states)
+        return states
     
+    def wait(self):
+        
+        while self.paused: 
+            pressed_keys = pygame.key.get_pressed()
+
+            if pressed_keys[K_UP]:
+                self.paused = False
     
     def _add_enemies(self):
         
         while (self.obs_index < s.NUM_OBSTACLES) and (self.player.s_y + s.HORIZON > self.obstacles_y[self.obs_index]):
-            # Create the new enemy, and add it to our sprite groups
+
             new_enemy = Enemy(s_x = self.obstacles_x[self.obs_index], s_y = self.obstacles_y[self.obs_index])
             self.enemies.add(new_enemy)
             self.all_sprites.add(new_enemy)
             
             self.obs_index += 1
             
-            
-    def _get_actions(self, states):
+    def _add_road_markers(self):
+
+        while (self.marker_index < s.TRACK_LENGTH) and (self.player.s_y + s.HORIZON > self.road_marker_y[self.marker_index]):
+
+            new_marker = RoadMarker(s_x=self.road_marker_x[self.marker_index], s_y=self.road_marker_y[self.marker_index])
+            self.roadmarkers.add(new_marker)
+            self.all_sprites.add(new_marker)
+
+            self.marker_index += 1
+
+    def _get_control_input(self, action):
         
-        u_x = u_y = 0
+        (u_x, u_y) = action
         
         pressed_keys = pygame.key.get_pressed()
         if s.RENDER and any(pressed_keys):
+            
+            u_x = u_y = 0
+            
             if pressed_keys[K_UP]:
                 u_y = 1
                 # move_up_sound.play()
@@ -111,29 +158,21 @@ class Game:
             if pressed_keys[K_RIGHT]:
                 u_x = 1
 
-        else:
-            u_x, u_y = self.agent.act(states)
-
         return u_x, u_y
     
     
     def _handle_collisions(self):
         
         collided = pygame.sprite.spritecollideany(self.player, self.enemies)
-        # Check if any enemies have collided with the player
+
         if collided:
-            # If so, remove the player
+
             self.player.penalize()
             collided.kill()
             self.crashes += 1
-            # Stop any moving sounds and play the collision sound
             # move_up_sound.stop()
             # move_down_sound.stop()
-            # collision_sound.play()
-    
-            # Stop the loop
-            # running = False    
-            
+            # collision_sound.play()            
             
     def _check_finished(self):
         
@@ -153,4 +192,18 @@ class Game:
         obstacles_x = [random.randint(0.5*s.ENEMY_SIZE[0], s.WINDOW_WIDTH - 1.5*s.ENEMY_SIZE[0]) for x in range(len(obstacles_y))]
 
         return obstacles_x, obstacles_y
-    
+
+    def _generate_roadmarker_coords(self):
+
+        marker_y = []
+        marker_x = []
+        for i in range(int(s.TRACK_LENGTH)):
+            marker_y.append(i*125)
+            marker_x.append(s.WINDOW_WIDTH*0.25)
+
+            marker_y.append(i*125)
+            marker_x.append(s.WINDOW_WIDTH*0.50)
+
+            marker_y.append(i*125)
+            marker_x.append(s.WINDOW_WIDTH*0.75)
+        return marker_x, marker_y
