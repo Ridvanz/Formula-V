@@ -10,11 +10,11 @@ from pygame.locals import ( K_UP,
 class Game:
     """Provides game flow."""
 
-    def __init__(self, screen, clock):
+    def __init__(self, screen, clock, seed):
         self.screen          = screen        
         self.clock           = clock
         
-        self.seed            = s.SEED
+        self.seed            = seed
         self.window          = pygame.Surface((s.WINDOW_WIDTH, s.WINDOW_HEIGHT))
 
         self.player          = Player()
@@ -54,9 +54,7 @@ class Game:
         self._check_finished()
         
         self.ticks += 1
-        # Ensure we maintain a 30 frames per second rate
-        self.clock.tick(s.FPS)
-        
+
         if s.DEBUG:
             print(f"fps: {self.clock.get_fps()}")
     
@@ -86,6 +84,8 @@ class Game:
         self.screen.blit(distance_left,(820,140))
         
         pygame.display.update()
+        
+        self.clock.tick(s.FPS)
         
     def observe(self):
         
@@ -181,17 +181,18 @@ class Game:
             self.running = False
             
     def _generate_obstacle_coords(self, seed=0):
+        if s.NUM_OBSTACLES > 0:
         
-        random.seed(seed)
-        obstacles_y = [0]
-        for i in range(s.NUM_OBSTACLES):
-            randint = random.randint(100,200)
-            obstacles_y.append(obstacles_y[i] + randint)
-
-        obstacles_y = [x/obstacles_y[-1]*(s.TRACK_LENGTH-s.SPAWN_AREA)+s.SPAWN_AREA for x in obstacles_y][:-1]
-        obstacles_x = [random.randint(0.5*s.ENEMY_SIZE[0], s.WINDOW_WIDTH - 1.5*s.ENEMY_SIZE[0]) for x in range(len(obstacles_y))]
-
-        return obstacles_x, obstacles_y
+            random.seed(seed)
+            obstacles_y = [0]
+            for i in range(s.NUM_OBSTACLES):
+                randint = random.randint(100,200)
+                obstacles_y.append(obstacles_y[i] + randint)
+    
+            obstacles_y = [x/obstacles_y[-1]*(s.TRACK_LENGTH-s.SPAWN_AREA)+s.SPAWN_AREA for x in obstacles_y][:-1]
+            obstacles_x = [random.randint(0.5*s.ENEMY_SIZE[0], s.WINDOW_WIDTH - 1.5*s.ENEMY_SIZE[0]) for x in range(len(obstacles_y))]
+    
+            return obstacles_x, obstacles_y
 
     def _generate_roadmarker_coords(self):
 

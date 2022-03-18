@@ -14,21 +14,23 @@ if s.SOUND:
     pygame.mixer.init()
     pygame.mixer.music.load("assets/music/game.mp3")
     pygame.mixer.music.play(loops=-1)
+    # move_up_sound = pygame.mixer.Sound("Rising_putter.ogg")
+    # move_down_sound = pygame.mixer.Sound("Falling_putter.ogg")
+    # collision_sound = pygame.mixer.Sound("Collision.ogg")
+    
+    # move_up_sound.set_volume(s.VOLUME)
+    # move_down_sound.set_volume(s.VOLUME)
+    # collision_sound.set_volume(s.VOLUME)
 if s.RENDER:
+    screen = pygame.display.set_mode((s.SCREEN_WIDTH, s.SCREEN_HEIGHT))
     pygame.display.set_caption("Formula V")
-screen = pygame.display.set_mode((s.SCREEN_WIDTH, s.SCREEN_HEIGHT))
+else:
+    screen = None
+
 clock = pygame.time.Clock()
+game = g.Game(screen, clock, s.SEED)
+agent = a.Agent()    
 
-# move_up_sound = pygame.mixer.Sound("Rising_putter.ogg")
-# move_down_sound = pygame.mixer.Sound("Falling_putter.ogg")
-# collision_sound = pygame.mixer.Sound("Collision.ogg")
-
-# move_up_sound.set_volume(s.VOLUME)
-# move_down_sound.set_volume(s.VOLUME)
-# collision_sound.set_volume(s.VOLUME)
-
-game = g.Game(screen, clock)
-agent = a.Agent()
 
 start_time = time.time()
 while game.running:
