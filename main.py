@@ -5,7 +5,7 @@ import math
 import sys
 from entities import Player, Enemy, RoadMarker
 import settings as s
-from utils import try_quit, generate_obstacle_coords
+from utils import try_quit
 import game as g
 import agent as a
 
@@ -39,7 +39,6 @@ clock = pygame.time.Clock()
 # move_down_sound.set_volume(0.5)
 # collision_sound.set_volume(0.5)
 # Variable to keep our main loop running
-
 
 game = g.Game(screen, clock)
 agent = a.Agent()

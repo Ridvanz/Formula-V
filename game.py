@@ -1,17 +1,11 @@
 import pygame
-from entities import Player, Enemy, RoadMarker
+from entities import Player, Enemy, RoadMarker, Finish
 import settings as s
 import random
-from pygame.locals import (
-    RLEACCEL,
-    K_UP,
-    K_DOWN, 
-    K_LEFT,
-    K_RIGHT,
-    K_ESCAPE,
-    KEYDOWN,
-    QUIT,
-)
+from pygame.locals import ( K_UP,
+                            K_DOWN, 
+                            K_LEFT,
+                            K_RIGHT)
 
 
 class Game:
@@ -25,28 +19,40 @@ class Game:
         self.window          = pygame.Surface((s.WINDOW_WIDTH, s.WINDOW_HEIGHT))
 
         self.player          = Player()
-
+        self.finish_line     = Finish()
+        
         self.enemies         = pygame.sprite.Group()
         self.all_sprites     = pygame.sprite.Group()
+        self.roadmarkers     = pygame.sprite.Group()
         
         self.running         = True
         self.paused          = False
-        self.ticks            = 0
+        self.ticks           = 0
         self.crashes         = 0
         self.obs_index       = 0
+        self.marker_index    = 0
         
         self.all_sprites.add(self.player)
         self.obstacles_x, self.obstacles_y = self._generate_obstacle_coords(self.seed)
-
+        self.road_marker_x, self.road_marker_y = self._generate_roadmarker_coords()
 
     def update(self, action):
+                
+        self._add_road_markers()
+        self.roadmarkers.update(self.player.s_y)
         
         self._add_enemies()
-    
+        
+        
         u_x, u_y = self._get_control_input(action)
         
         self.player.update(u_x, u_y)
         self.enemies.update(self.player.s_y)
+        
+        
+        self.finish_line.update(self.player.s_y)
+
+        
         self._handle_collisions()
         self._check_finished()
         
@@ -65,6 +71,8 @@ class Game:
     
         for entity in self.all_sprites:
             self.window.blit(entity.surf, entity.rect)
+            
+        self.window.blit(self.player.surf, self.player.rect)
         
         self.screen.fill(s.BLACK)
         self.screen.blit(self.window, ((s.SCREEN_WIDTH-s.WINDOW_WIDTH)/2, (s.SCREEN_HEIGHT-s.WINDOW_HEIGHT)/2))
@@ -89,7 +97,21 @@ class Game:
             
             self.obs_index += 1
             
-            
+    def _add_road_markers(self):
+
+        while (self.marker_index < s.TRACK_LENGTH) and (self.player.s_y + s.HORIZON > self.road_marker_y[self.marker_index]):
+            # Create the new enemy, and add it to our sprite groups
+            new_marker_left = RoadMarker(s_x=self.road_marker_x[self.marker_index], s_y=self.road_marker_y[self.marker_index])
+            new_marker_right = RoadMarker(s_x=self.road_marker_x[self.marker_index+1],
+                                         s_y=self.road_marker_y[self.marker_index+1])
+
+            self.roadmarkers.add(new_marker_left)
+            self.roadmarkers.add(new_marker_right)
+            self.all_sprites.add(new_marker_left)
+            self.all_sprites.add(new_marker_right)
+
+            self.marker_index += 1
+
     def _get_control_input(self, action):
         
         (u_x, u_y) = action
@@ -149,4 +171,18 @@ class Game:
         obstacles_x = [random.randint(0.5*s.ENEMY_SIZE[0], s.WINDOW_WIDTH - 1.5*s.ENEMY_SIZE[0]) for x in range(len(obstacles_y))]
 
         return obstacles_x, obstacles_y
-    
+
+    def _generate_roadmarker_coords(self):
+
+        marker_y = []
+        marker_x = []
+        for i in range(int(s.TRACK_LENGTH)):
+            marker_y.append(i*125)
+            marker_x.append(s.WINDOW_WIDTH*0.25)
+
+            marker_y.append(i*125)
+            marker_x.append(s.WINDOW_WIDTH*0.50)
+
+            marker_y.append(i*125)
+            marker_x.append(s.WINDOW_WIDTH*0.75)
+        return marker_x, marker_y

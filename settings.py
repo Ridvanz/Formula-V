@@ -14,12 +14,12 @@ VOLUME                = 0.7
 SEED                  = 0
 DEBUG                 = True
 
-TRACK_LENGTH          = 5e3
+TRACK_LENGTH          = 5e4
 SPAWN_AREA            = 1000
 NUM_OBSTACLES         = 250
 HORIZON               = 1000
 ENEMY_SIZE            = (40, 40)
-PLAYER_SIZE           = (40, 120)
+PLAYER_SIZE           = (40, 80)
 PLAYER_HEIGHT         = 50
 
 WHITE                 = (255, 255, 255)

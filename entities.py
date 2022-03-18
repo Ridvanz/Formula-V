@@ -2,20 +2,7 @@ import pygame
 import random
 import settings as s
 import glob
-from pygame.locals import (
-    RLEACCEL,
-    K_UP,
-    K_DOWN,
-    K_LEFT,
-    K_RIGHT,
-    K_ESCAPE,
-    KEYDOWN,
-    QUIT,
-)
 
-
-# Define the Player object extending pygame.sprite.Sprite
-# Instead of a surface, we use an image for a better looking sprite
 class Player(pygame.sprite.Sprite):
     def __init__(self, size=s.PLAYER_SIZE, color=s.ORANGE):
         super(Player, self).__init__()
@@ -86,10 +73,9 @@ class Player(pygame.sprite.Sprite):
     def penalize(self):
         self.v_y = self.v_y * self.crash
             
-# Define the enemy object extending pygame.sprite.Sprite
-# Instead of a surface, we use an image for a better looking sprite
+
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, s_x, s_y, size=s.ENEMY_SIZE, color=(0,0,0)):
+    def __init__(self, s_x, s_y, size=s.ENEMY_SIZE, color=s.RED):
         super(Enemy, self).__init__()
         
         if s.SPRITES:
@@ -103,9 +89,7 @@ class Enemy(pygame.sprite.Sprite):
             
         self.rect = self.surf.get_rect()
         self.bottom_border = s.WINDOW_HEIGHT
-        # self.surf.set_colorkey((255, 0, 255), RLEACCEL)
-        # The starting position is randomly generated, as is the speed
-        
+
         self.rect.left = s_x
         self.s_y = s_y
         
@@ -118,15 +102,13 @@ class Enemy(pygame.sprite.Sprite):
             self.kill()
             
 class RoadMarker(pygame.sprite.Sprite):
-    def __init__(self, s_x, s_y, size=(10,70), color=(0, 0, 0)):
+    def __init__(self, s_x, s_y, size=(10,70), color=s.WHITE):
         super(RoadMarker, self).__init__()
         self.surf = pygame.Surface(size)
         self.surf.fill(color)
-        self.surf.set_alpha(50)
+        self.surf.set_alpha(100)
         self.rect = self.surf.get_rect()
         self.bottom_border = s.WINDOW_HEIGHT
-        # self.surf.set_colorkey((255, 0, 255), RLEACCEL)
-        # The starting position is randomly generated, as is the speed
 
         self.rect.left = s_x
         self.s_y = s_y
@@ -145,8 +127,6 @@ class Finish(pygame.sprite.Sprite):
         #self.surf.fill(color)
         self.rect = self.surf.get_rect()
         self.bottom_border = s.WINDOW_HEIGHT
-        # self.surf.set_colorkey((255, 0, 255), RLEACCEL)
-        # The starting position is randomly generated, as is the speed
 
         self.rect.left = s_x
         self.s_y = s_y
