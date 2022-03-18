@@ -22,8 +22,17 @@ These inputs can be supplied by either pressing the direction keys, or by the ac
 
 The Agent.act function takes as input the state of the environment, which includes information about the player and currently instantiated obstacles, and returns the control inputs u_x and u_y.
 
-The inputs are scaled to represent the accelerations of the car in both the horizontal and vertical directions:
+State variables:
+- Distance from player to left wall
+- Distance from player to right wall
+- Distance traveled
+- Current player velocity in the X direction
+- Current player velocity in the Y direction
+- For each obstacle on the screen
+  - Relative x position to player
+  - Relative y position to player
 
+The inputs are scaled to represent the accelerations of the car in both the horizontal and vertical directions:
 
 ```
         a_x = u_x * scale_x
@@ -39,6 +48,9 @@ Where C_x and C_y serve as friction coefficients in the x and y directions respe
 Hitting an obstacle or a wall incurs additional penalties on the velocities.
 
 The goal of the game is to reach the finish in as few game ticks as possible. 
+
+
+
 
 
 
