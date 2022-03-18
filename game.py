@@ -102,7 +102,7 @@ class Game:
         for enemy in self.enemies.sprites():
             obstacle = {}
             obstacle["relative_x"] = enemy.s_x -  self.player.s_x
-            obstacle["relative_y"] = enemy.s_y -  self.player.s_y
+            obstacle["relative_y"] = enemy.s_y -  self.player.s_y - s.PLAYER_SIZE[1]
             obstacles.append(obstacle)
         
         states = {"player": player, "obstacles": obstacles}
