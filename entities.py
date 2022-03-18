@@ -91,6 +91,7 @@ class Enemy(pygame.sprite.Sprite):
         self.bottom_border = s.WINDOW_HEIGHT
 
         self.rect.left = s_x
+        self.s_x = s_x
         self.s_y = s_y
         
 
@@ -106,11 +107,12 @@ class RoadMarker(pygame.sprite.Sprite):
         super(RoadMarker, self).__init__()
         self.surf = pygame.Surface(size)
         self.surf.fill(color)
-        self.surf.set_alpha(100)
+        # self.surf.set_alpha(100)
         self.rect = self.surf.get_rect()
         self.bottom_border = s.WINDOW_HEIGHT
 
         self.rect.left = s_x
+        self.s_x = s_x
         self.s_y = s_y
 
     def update(self, s_y):
@@ -121,17 +123,22 @@ class RoadMarker(pygame.sprite.Sprite):
 
 
 class Finish(pygame.sprite.Sprite):
-    def __init__(self, s_x=0, s_y=s.TRACK_LENGTH, size=(s.WINDOW_WIDTH,50), color=(0, 0, 0)):
+    def __init__(self, s_x=0, s_y=s.TRACK_LENGTH, size=(s.WINDOW_WIDTH,200), color=s.BLACK):
         super(Finish, self).__init__()
-        self.surf = pygame.image.load("assets/images/finish.jpeg")
-        #self.surf.fill(color)
+        if s.SPRITES:
+            self.surf = pygame.image.load("assets/images/finish.png")
+            self.surf = pygame.transform.scale(self.surf, size)
+        else:
+            self.surf = pygame.Surface(size)
+            self.surf.fill(color)
+
         self.rect = self.surf.get_rect()
         self.bottom_border = s.WINDOW_HEIGHT
 
         self.rect.left = s_x
+        self.s_x = s_x
         self.s_y = s_y
 
-    # Move the enemy based on speed
-    # Remove it when it passes the left edge of the screen
+
     def update(self, s_y):
         self.rect.bottom = self.bottom_border - 50 - (self.s_y - s_y)

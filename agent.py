@@ -2,11 +2,11 @@ class Agent:
     """Plays the game."""
 
     def __init__(self):
-        self.saved = None
+        self.parameters = None
     
     def act(self, states):
         
         u_x = 0
         u_y = 1
         
-        return u_x, u_y
+        return (u_x, u_y)

@@ -7,7 +7,6 @@ from pygame.locals import ( K_UP,
                             K_LEFT,
                             K_RIGHT)
 
-
 class Game:
     """Provides game flow."""
 
@@ -32,6 +31,7 @@ class Game:
         self.obs_index       = 0
         self.marker_index    = 0
         
+        self.all_sprites.add(self.finish_line)
         self.all_sprites.add(self.player)
         self.obstacles_x, self.obstacles_y = self._generate_obstacle_coords(self.seed)
         self.road_marker_x, self.road_marker_y = self._generate_roadmarker_coords()
@@ -43,16 +43,13 @@ class Game:
         
         self._add_enemies()
         
-        
         u_x, u_y = self._get_control_input(action)
         
         self.player.update(u_x, u_y)
         self.enemies.update(self.player.s_y)
-        
-        
+                
         self.finish_line.update(self.player.s_y)
 
-        
         self._handle_collisions()
         self._check_finished()
         
@@ -77,15 +74,49 @@ class Game:
         self.screen.fill(s.BLACK)
         self.screen.blit(self.window, ((s.SCREEN_WIDTH-s.WINDOW_WIDTH)/2, (s.SCREEN_HEIGHT-s.WINDOW_HEIGHT)/2))
         
+        font = pygame.font.SysFont('Arial', 16)
+        fps = font.render(f"FPS: {round(self.clock.get_fps(),2)}", True, (255,255,255))
+        speed = font.render(f"Speed: {round(self.player.v_y,1)}",True,(255,255,255))
+        ticks = font.render(f"Ticks: {self.ticks}",True,(255,255,255))
+        distance_left = font.render(f"Distance left: {int(s.TRACK_LENGTH-self.player.s_y)}",True,(255,255,255))
+        
+        self.screen.blit(fps,(820,20))
+        self.screen.blit(speed, (820, 60))
+        self.screen.blit(ticks, (820, 100))
+        self.screen.blit(distance_left,(820,140))
+        
         pygame.display.update()
         
     def observe(self):
         
-        print([enemy.rect for enemy in self.enemies.sprites()])
-        print(self.player.s_x, self.player.s_y, self.player.v_x, self.player.v_y )
+        # print([(enemy.s_x, enemy.s_y - self.player.s_y) for enemy in self.enemies.sprites()])
+        print(self.player.s_x+s.PLAYER_SIZE[0]/2, self.player.s_y, self.player.v_x, self.player.v_y )
+        player = {}
+        player["left_wall"] = self.player.s_x+s.PLAYER_SIZE[0]/2
+        player["right_wall"] = s.WINDOW_WIDTH - self.player.s_x - s.PLAYER_SIZE[0]/2
+        player["distance_traveled"] = self.player.s_y
+        player["velocity_x"] = self.player.v_x
+        player["velocity_y"] = self.player.v_y
         
-        return 
+        obstacles = []
+        for enemy in self.enemies.sprites():
+            obstacle = {}
+            obstacle["relative_x"] = enemy.s_x -  self.player.s_x
+            obstacle["relative_y"] = enemy.s_y -  self.player.s_y
+            obstacles.append(obstacle)
+        
+        states = {"player": player, "obstacles": obstacles}
+        
+        print(states)
+        return states
     
+    def wait(self):
+        
+        while self.paused: 
+            pressed_keys = pygame.key.get_pressed()
+
+            if pressed_keys[K_UP]:
+                self.paused = False
     
     def _add_enemies(self):
         
@@ -100,15 +131,10 @@ class Game:
     def _add_road_markers(self):
 
         while (self.marker_index < s.TRACK_LENGTH) and (self.player.s_y + s.HORIZON > self.road_marker_y[self.marker_index]):
-            # Create the new enemy, and add it to our sprite groups
-            new_marker_left = RoadMarker(s_x=self.road_marker_x[self.marker_index], s_y=self.road_marker_y[self.marker_index])
-            new_marker_right = RoadMarker(s_x=self.road_marker_x[self.marker_index+1],
-                                         s_y=self.road_marker_y[self.marker_index+1])
 
-            self.roadmarkers.add(new_marker_left)
-            self.roadmarkers.add(new_marker_right)
-            self.all_sprites.add(new_marker_left)
-            self.all_sprites.add(new_marker_right)
+            new_marker = RoadMarker(s_x=self.road_marker_x[self.marker_index], s_y=self.road_marker_y[self.marker_index])
+            self.roadmarkers.add(new_marker)
+            self.all_sprites.add(new_marker)
 
             self.marker_index += 1
 
@@ -138,20 +164,15 @@ class Game:
     def _handle_collisions(self):
         
         collided = pygame.sprite.spritecollideany(self.player, self.enemies)
-        # Check if any enemies have collided with the player
+
         if collided:
-            # If so, remove the player
+
             self.player.penalize()
             collided.kill()
             self.crashes += 1
-            # Stop any moving sounds and play the collision sound
             # move_up_sound.stop()
             # move_down_sound.stop()
-            # collision_sound.play()
-    
-            # Stop the loop
-            # running = False    
-            
+            # collision_sound.play()            
             
     def _check_finished(self):
         
