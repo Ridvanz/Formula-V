@@ -15,9 +15,8 @@ if s.SOUND:
     pygame.mixer.music.load("assets/music/game.mp3")
     pygame.mixer.music.play(loops=-1)
 if s.RENDER:
-    screen = pygame.display.set_mode((s.SCREEN_WIDTH, s.SCREEN_HEIGHT))
     pygame.display.set_caption("Formula V")
-
+screen = pygame.display.set_mode((s.SCREEN_WIDTH, s.SCREEN_HEIGHT))
 clock = pygame.time.Clock()
 
 # move_up_sound = pygame.mixer.Sound("Rising_putter.ogg")

@@ -90,7 +90,7 @@ class Game:
     def observe(self):
         
         # print([(enemy.s_x, enemy.s_y - self.player.s_y) for enemy in self.enemies.sprites()])
-        print(self.player.s_x+s.PLAYER_SIZE[0]/2, self.player.s_y, self.player.v_x, self.player.v_y )
+        #print(self.player.s_x+s.PLAYER_SIZE[0]/2, self.player.s_y, self.player.v_x, self.player.v_y )
         player = {}
         player["left_wall"] = self.player.s_x+s.PLAYER_SIZE[0]/2
         player["right_wall"] = s.WINDOW_WIDTH - self.player.s_x - s.PLAYER_SIZE[0]/2
@@ -107,7 +107,7 @@ class Game:
         
         states = {"player": player, "obstacles": obstacles}
         
-        print(states)
+        #print(states)
         return states
     
     def wait(self):
