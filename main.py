@@ -10,6 +10,7 @@ import agent as a
 
 pygame.init()
 pygame.event.set_blocked (pygame.MOUSEMOTION )
+
 if s.SOUND:
     pygame.mixer.init()
     pygame.mixer.music.load("assets/music/game.mp3")
