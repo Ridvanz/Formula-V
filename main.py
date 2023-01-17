@@ -11,25 +11,19 @@ agent = a.Agent()
 game = g.Game(0)
 
 start_time = time.time()
-while game.running:
-    
-    for event in pygame.event.get():
-        try_quit(event)
+while not game.finished:
 
     observation = game.observe()
+
+    print(observation)
+
     action = agent.act(observation)
     game.update(action)
-    
+
     if s.RENDER:
         game.render()
-        
-        
-end_time = time.time() - start_time   
+
+end_time = time.time() - start_time
 
 print(f"Game completed in {end_time} seconds.")
 print(f"reached the finish in {game.ticks} ticks!")
-print(f"Number of crashes: {game.crashes}")
-print(f"Max speed reached: {game.player.max_speed} pixels per second!")
-
-
-

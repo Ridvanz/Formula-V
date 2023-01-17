@@ -9,12 +9,12 @@ WINDOW_HEIGHT         = 800
 TITLE_SCREEN          = True
 RENDER                = True
 SPRITES               = True
-SOUND                 = True
+SOUND                 = False
 VOLUME                = 0.5
 SEED                  = 0
 DEBUG                 = False
 
-TRACK_LENGTH          = 5e4
+TRACK_LENGTH          = 100
 SPAWN_AREA            = 1000
 NUM_OBSTACLES         = 250
 HORIZON               = 1000
