@@ -2,9 +2,9 @@ from pygame import Color
 import math, os
 
 FPS                   = 60
-SCREEN_WIDTH          = 1200
+SCREEN_WIDTH          = 1600
 SCREEN_HEIGHT         = 800
-WINDOW_WIDTH          = 400
+WINDOW_WIDTH          = 800
 WINDOW_HEIGHT         = 800
 TITLE_SCREEN          = True
 RENDER                = True

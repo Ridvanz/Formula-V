@@ -6,32 +6,9 @@ from utils import try_quit
 import game as g
 import agent as a
 
-# Initialize pygame
+agent = a.Agent()
 
-pygame.init()
-pygame.event.set_blocked (pygame.MOUSEMOTION )
-
-if s.SOUND:
-    pygame.mixer.init()
-    pygame.mixer.music.load("assets/music/game.mp3")
-    pygame.mixer.music.play(loops=-1)
-    # move_up_sound = pygame.mixer.Sound("Rising_putter.ogg")
-    # move_down_sound = pygame.mixer.Sound("Falling_putter.ogg")
-    # collision_sound = pygame.mixer.Sound("Collision.ogg")
-    
-    # move_up_sound.set_volume(s.VOLUME)
-    # move_down_sound.set_volume(s.VOLUME)
-    # collision_sound.set_volume(s.VOLUME)
-if s.RENDER:
-    screen = pygame.display.set_mode((s.SCREEN_WIDTH, s.SCREEN_HEIGHT))
-    pygame.display.set_caption("Formula V")
-else:
-    screen = None
-
-clock = pygame.time.Clock()
-game = g.Game(screen, clock, s.SEED)
-agent = a.Agent()    
-
+game = g.Game(0)
 
 start_time = time.time()
 while game.running:
@@ -54,8 +31,5 @@ print(f"reached the finish in {game.ticks} ticks!")
 print(f"Number of crashes: {game.crashes}")
 print(f"Max speed reached: {game.player.max_speed} pixels per second!")
 
-pygame.mixer.music.stop()
-pygame.mixer.quit()
-pygame.display.quit()
-pygame.quit()
+
 
