@@ -1,10 +1,10 @@
 import pygame
 from pygame.locals import K_UP, K_DOWN, K_LEFT, K_RIGHT, KEYDOWN, K_ESCAPE, K_w, K_a, K_s, K_d
-import sys
-import settings as s
+# import sys
+import src.settings as s
 # import numpy as np
-from simulate import set_seed, game_update, get_initial_state, size, N
-import numpy as np
+from src.simulate import set_seed, game_update, get_initial_state, size, N
+# import numpy as np
 
 class Game:
     """Provides game flow."""
@@ -19,7 +19,7 @@ class Game:
         self.stopped = False
     
     def reset(self):
-        self.player, self.obstacles, self.idx = get_initial_state()
+        self.player, self.obstacles, self.idx, self.observation = get_initial_state()
         self.ticks = 0
         self.finished = False
         self.render_initialized = False
@@ -31,7 +31,7 @@ class Game:
         if self.render_mode:
             self.u_x, self.u_y = self._get_control_input(action)
 
-        self.player, self.obstacles, self.idx = game_update(
+        self.player, self.obstacles, self.idx, self.observation = game_update(
             (self.u_x, self.u_y), self.player, self.obstacles, self.idx
         )
 
@@ -48,12 +48,12 @@ class Game:
 
     def observe(self):
 
-        passed = int(self.obstacles[self.idx, 1] < -size)
+        # passed = int(self.obstacles[self.idx, 1] < -size)
 
-        obstacles = self.obstacles[[(self.idx + i + passed) % N for i in range(4)], :]
-        observation = {"player": self.player, "obstacles": obstacles, "ticks": self.ticks}
+        # obstacles = self.obstacles[[(self.idx + i + passed) % N for i in range(4)], :]
+        # observation = {"player": self.player, "obstacles": obstacles, "ticks": self.ticks}
         
-        return observation
+        return self.observation
 
     def render(self):
         

@@ -6,7 +6,6 @@ SCREEN_WIDTH          = 1600
 SCREEN_HEIGHT         = 800
 WINDOW_WIDTH          = 800
 WINDOW_HEIGHT         = 800
-RENDER                = False
 SOUND                 = True
 DEBUG                 = True
 

@@ -1,13 +1,14 @@
 # Import the pygame module
 # import pygame
 import time
-import settings as s
-import game as g
+import src.settings as s
+import src.game as g
 import agent as a
 
 agent = a.Agent()
 
 game = g.Game(seed=0, render_mode = True)
+# game = g.Game(seed=0, render_mode = False)
 
 start_time = time.time()
 while not game.finished:
@@ -23,4 +24,4 @@ while not game.finished:
 end_time = time.time() - start_time
 
 print(f"Game completed in {end_time} seconds.")
-print(f"reached the finish in {game.ticks} ticks!")
+print(f"Traveled a distance {game.player[1]} units.")
