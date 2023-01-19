@@ -49,12 +49,11 @@ Hitting an obstacle or a wall incurs additional penalties on the velocities.
 
 The goal of the game is to reach the finish in as few game ticks as possible. 
 
+For reinforcement learning algorithms I suggest using this package for out of the box compatibility:
+https://github.com/DLR-RM/stable-baselines3
 
 
-
-
-
-
-
-
+Refactored the game logic with numba for a 1000x speedup!
+The first function call to game_update takes about a second to compile. 
+After that, we can run about 600,000 game updates per second.
 

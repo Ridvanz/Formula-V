@@ -7,6 +7,6 @@ class Agent:
     def act(self, states):
         
         u_x = 0
-        u_y = 0
+        u_y = 1
         
         return (u_x, u_y)
