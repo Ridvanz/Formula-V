@@ -1,15 +1,9 @@
-from pygame import Color
-import math, os
-
 FPS                   = 60
 SCREEN_WIDTH          = 1600
 SCREEN_HEIGHT         = 800
 WINDOW_WIDTH          = 800
 WINDOW_HEIGHT         = 800
-SOUND                 = True
-DEBUG                 = True
-
-GAME_LENGTH           = 3600          
+SOUND                 = True    
 
 WHITE                 = (255, 255, 255)
 BLACK                 = (0, 0, 0)

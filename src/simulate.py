@@ -47,7 +47,7 @@ def game_update(u, player, obstacles, idx):
     u_y = max(-1, min(u_y, 1))
 
     a_x  = u_x * 0.001
-    a_y  = u_y * 0.0001
+    a_y  = u_y * 0.00005
 
     player[2] =  C_x * player[2] + a_x
     player[3] = max(0, C_y * player[3] + a_y)
@@ -110,9 +110,8 @@ if __name__ == '__main__':
 
         observation_history.append(observation.copy())
 
-
     print('time: {}'.format(time.perf_counter() - time1))
 
     data = np.stack(observation_history)
 
-    print(observation_history[10])
+    # print(observation_history[10])

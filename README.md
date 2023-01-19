@@ -2,7 +2,7 @@
  
 ##About
 
-Formula V is a top-down racing simulator. It serves as an Agent-Environment interface for showcasing algorithms and strategies in autonomous navigation. The project was developed by consultants from Vantage AI for an internal competition.
+Formula V is a top-down hyper realistic racing simulator. It serves as an Agent-Environment interface for showcasing algorithms and strategies in autonomous navigation. The project was developed by consultants from Vantage AI for an internal competition.
 
 ##Installation
 
@@ -12,7 +12,7 @@ For those who wish to try reinforcement learning, you can additionally install "
 ##Running the game
 
 The game can be played by running the main.py file in the root folder. When we initialize the game with render_mode = True,
-a window opens where you can play the game yourself.
+a window opens where you can visualize and play the game yourself.
 
 ##Gameplay
 
@@ -31,9 +31,9 @@ Where C_x and C_y serve as friction coefficients in the x and y directions respe
 
 Hitting an obstacle or a wall incurs additional penalties on the velocities.
 
-The inputs can be supplied by either pressing the direction keys or with "wasd" when rendering is turned on, or by the act function of the Agent class. 
+The inputs can be supplied by either pressing the direction keys or WASD when rendering is turned on, or by the act function of the Agent class. 
 
-The Agent.act function takes as input the state of the environment, which includes information about the player and currently instantiated obstacles, and returns the control inputs u_x and u_y. Your assignment is to rewrite this class such that the car navigates through the obstacles as fast a possible. The score is equal to the distance traveled (player_y) after 3600 ingame ticks (60 seconds).
+The Agent.act function takes as input the state of the environment, which includes information about the player and currently instantiated obstacles, and returns the control inputs u_x and u_y. Your assignment is to rewrite this class such that the car navigates through the obstacles as fast a possible. The score is equal to the distance traveled (player_y) after 3600 ingame ticks (60 seconds). 
 
 ##Observations
 The game.observe method returns a numpy array containing the current states of the onscreen objects that you may use to control the agent. Here is an example of an observation:
@@ -58,17 +58,14 @@ Note that the y coordinate of the obstacles are relative to the player. Also, th
 
 
 ##Settings
-The values in src/settings.py can be altered to suit your needs. For example, you van tweak the window and screen sizes to your liking. This wont affect gameplay.
+The values in src/settings.py can be altered to suit your needs. For example, you van tweak the window and screen sizes to your liking. Or turn off that anoying background music. This wont affect gameplay.
 
 ##Further info
 
 For reinforcement learning algorithms I suggest using this package for out of the box compatibility with the gym environment:
 https://github.com/DLR-RM/stable-baselines3
 
-
-I refactored the game logic with numba for a 1000x speedup!
-The src/simulate.py file contains the core functions that implement the game logic. 
+The recent version of the game is refactored with numba for a 1000x speedup.
+The src/simulate.py file contains the core numba functions that implement the game logic. 
 You could potentially use these to efficiently generate a lot of input/output data without the overhead of the pygame class.
 An example is given when you run the script.
-The first function call to game_update takes about a second to compile. 
-After that, I could run about 600,000 game updates per second.

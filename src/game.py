@@ -1,15 +1,24 @@
 import pygame
-from pygame.locals import K_UP, K_DOWN, K_LEFT, K_RIGHT, KEYDOWN, K_ESCAPE, K_w, K_a, K_s, K_d
-# import sys
+from pygame.locals import (
+    K_UP,
+    K_DOWN,
+    K_LEFT,
+    K_RIGHT,
+    KEYDOWN,
+    K_ESCAPE,
+    K_w,
+    K_a,
+    K_s,
+    K_d,
+)
 import src.settings as s
-# import numpy as np
 from src.simulate import set_seed, game_update, get_initial_state, size, N
-# import numpy as np
+
 
 class Game:
     """Provides game flow."""
 
-    def __init__(self, seed=None, render_mode = False):
+    def __init__(self, seed=None, render_mode=False):
 
         if seed is not None:
             set_seed(seed)
@@ -17,17 +26,18 @@ class Game:
         self.render_mode = render_mode
         self.reset()
         self.stopped = False
-    
+        self.GAME_LENGTH = 3600      
+
     def reset(self):
         self.player, self.obstacles, self.idx, self.observation = get_initial_state()
         self.ticks = 0
         self.finished = False
         self.render_initialized = False
-    
+
     def update(self, action):
-        
+
         self.u_x, self.u_y = action
-        
+
         if self.render_mode:
             self.u_x, self.u_y = self._get_control_input(action)
 
@@ -35,31 +45,19 @@ class Game:
             (self.u_x, self.u_y), self.player, self.obstacles, self.idx
         )
 
-        # if self.player[1] > s.TRACK_LENGTH:
-        #     self.finished = True
-
-        if self.ticks > s.GAME_LENGTH:
+        if self.ticks > self.GAME_LENGTH:
             self.finished = True
-        
+
         self.ticks += 1
 
-        # if s.DEBUG:
-        #     print(f"fps: {self.clock.get_fps()}")
-
     def observe(self):
-
-        # passed = int(self.obstacles[self.idx, 1] < -size)
-
-        # obstacles = self.obstacles[[(self.idx + i + passed) % N for i in range(4)], :]
-        # observation = {"player": self.player, "obstacles": obstacles, "ticks": self.ticks}
-        
         return self.observation
 
     def render(self):
-        
+
         if not self.render_initialized:
             self._init_render()
-            
+
         red = max(0, min(255, self.player[3] * 5 * 255))
         self.window.fill((red, 255, 255 - red))
 
@@ -100,9 +98,7 @@ class Game:
         speed = font.render(f"Speed: {round(self.player[3],2)}", True, text_color)
         ticks = font.render(f"Ticks: {self.ticks}", True, text_color)
         distance_left = font.render(
-            f"Distance traveled: {round(self.player[1], 2)}",
-            True,
-            text_color,
+            f"Distance traveled: {round(self.player[1], 2)}", True, text_color,
         )
 
         text_x = s.WINDOW_WIDTH + (s.SCREEN_WIDTH - s.WINDOW_WIDTH) / 2 + 5
@@ -119,9 +115,8 @@ class Game:
         #     if e.type == QUIT or (e.type == KEYDOWN and e.key == K_ESCAPE):
         #         pygame.quit()
         #         sys.exit()
-        
-        self.clock.tick(s.FPS)
 
+        self.clock.tick(s.FPS)
 
     def _get_control_input(self, action):
 
@@ -137,16 +132,13 @@ class Game:
 
             if pressed_keys[K_UP] or pressed_keys[K_w]:
                 u_y += 1
-                # move_up_sound.play()
             if pressed_keys[K_DOWN] or pressed_keys[K_s]:
                 u_y -= 1
-                # move_down_sound.play()
-
             if pressed_keys[K_RIGHT] or pressed_keys[K_d]:
                 u_x += 1
             if pressed_keys[K_LEFT] or pressed_keys[K_a]:
                 u_x -= 1
-                
+
             if pressed_keys[K_ESCAPE]:
                 self.stop()
 
@@ -160,10 +152,8 @@ class Game:
         self.clock = pygame.time.Clock()
 
         pygame.init()
-        # pygame.event.set_blocked(pygame.MOUSEMOTION)
         pygame.event.set_blocked(None)
         pygame.event.set_allowed(KEYDOWN)
-
         self.window = pygame.Surface((s.WINDOW_WIDTH, s.WINDOW_HEIGHT))
         self.size = (size * s.WINDOW_WIDTH, size * s.WINDOW_HEIGHT)
 
@@ -175,11 +165,7 @@ class Game:
         self.render_initialized = True
 
     def stop(self):
-        
-        # if s.SOUND:
-        #     pygame.mixer.music.stop()
-        #     pygame.mixer.quit()
-                    
+
         if self.render_mode:
             pygame.display.quit()
             pygame.quit()

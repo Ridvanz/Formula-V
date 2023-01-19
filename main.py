@@ -8,7 +8,6 @@ import agent as a
 agent = a.Agent()
 
 game = g.Game(seed=0, render_mode = True)
-# game = g.Game(seed=0, render_mode = False)
 
 start_time = time.time()
 while not game.finished:
