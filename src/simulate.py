@@ -64,7 +64,7 @@ def game_update(u, player, obstacles, idx):
     
     obstacles[:,1] -= player[3]
     
-    obstacles[:,0] += 0.02*obstacles[:,2]
+    obstacles[:,0] += 0.01*obstacles[:,2]
     obstacles[(obstacles[:,0]<0) | (obstacles[:,0]>1), 2] *= -1
     
     if obstacles[idx,1] < -2*size:
