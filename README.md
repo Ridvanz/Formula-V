@@ -6,11 +6,7 @@ Formula V is a top-down racing simulator. It serves as an Agent-Environment inte
 
 ##Installation
 
-To play, ensure that you have [Python 3.x](https://www.python.org/) and [Pygame](http://www.pygame.org/download.shtml) installed, and then:
-
-```
-  $ ./play
-```
+install with "pip install requirements"
 
 ##Settings
 The values in settings.py can be altered to suit your needs. For example, we can set RENDERING = False to greatly speed up the simulation.

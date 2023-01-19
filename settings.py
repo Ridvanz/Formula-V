@@ -11,12 +11,6 @@ SOUND                 = True
 DEBUG                 = True
 
 GAME_LENGTH           = 3600          
-# SPAWN_AREA            = 1000
-# NUM_OBSTACLES         = 250
-# HORIZON               = 1000
-# ENEMY_SIZE            = (40, 40)
-# PLAYER_SIZE           = (40, 80)
-# PLAYER_HEIGHT         = 50
 
 WHITE                 = (255, 255, 255)
 BLACK                 = (0, 0, 0)

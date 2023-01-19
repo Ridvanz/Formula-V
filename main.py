@@ -17,7 +17,7 @@ while not game.finished:
     action = agent.act(observation)
     game.update(action)
 
-    if s.RENDER:
+    if game.render_mode:
         game.render()
 
 end_time = time.time() - start_time
